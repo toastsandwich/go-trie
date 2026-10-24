@@ -67,18 +67,23 @@ func (t *Trie) Reset() {
 
 func (t *Trie) Insert(s string) {
 	curr := t.Root
-	slen := len(s)
-	for i, r := range s {
+	runes := []rune(s)
+	rlen := len(runes)
+	for i, r := range runes {
 		idx, ok := curr.findChild(r)
 		if !ok {
 			newNode := createNode(r)
-			newNode.IsEnd = ((slen - 1) == i)
+			newNode.IsEnd = ((rlen - 1) == i)
 
 			curr.addChild(newNode)
 			curr = newNode
 			continue
 		}
 		if f := curr.getChild(idx); f != nil {
+			if rlen-1 == i {
+				f.IsEnd = true
+				break
+			}
 			curr = f
 		}
 	}
